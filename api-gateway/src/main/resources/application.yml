@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "configserver:http://localhost:8888"
+  security:
+    user:
+      password: password
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # Enable dynamic service discovery
+          lower-case-service-id: true # Use lowercase for service IDs
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka/ # Eureka Server URL
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway # Expose specific Actuator endpoints
+
+
+
+server:
+  port: 8080 # Gateway runs on port 8080
+
+custom:
+  gateway:
+    public-services:
+      - "user-service" # Service with login and register endpoints
+
+logging:
+  level:
+    org.springframework.security: DEBUG

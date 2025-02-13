@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  config-server:
+    image: config-server
+    container_name: config-server
+    networks:
+      - microservices-network
+    ports:
+      - "8888:8888"
+
+  discovery-server:
+    image: discovery-server
+    container_name: discovery-server
+    networks:
+      - microservices-network
+    ports:
+      - "8761:8761"
+
+networks:
+  microservices-network:
+    driver: bridge

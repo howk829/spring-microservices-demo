@@ -33,6 +33,15 @@ dependencyManagement {
 	}
 }
 
+bootJar {
+	archiveBaseName = project.name
+	archiveVersion = version
+}
+
+tasks.named('build') {
+	dependsOn bootJar
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
