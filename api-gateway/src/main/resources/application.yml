@@ -37,6 +37,6 @@ custom:
     public-services:
       - "user-service" # Service with login and register endpoints
 
-logging:
-  level:
-    org.springframework.security: DEBUG
+#logging: # DEBUG logs
+#  level:
+#    org.springframework.security: DEBUG

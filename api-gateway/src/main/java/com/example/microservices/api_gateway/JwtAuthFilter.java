@@ -30,19 +30,18 @@ public class JwtAuthFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        System.out.println("Incoming request path: " + request.getPath());
+        log.info("Incoming request path: {}", request.getPath());
         String path = request.getPath().toString();
 
         String serviceName = getServiceNameFromPath(path);
 
         // Bypass JWT validation for public endpoints
         if (isPublicEndpoint(serviceName, path)) {
-            System.out.println("Public endpoint accessed: " + path);
+            log.info("Public endpoint accessed: {}", path);
             return chain.filter(exchange);
         }
 
-        System.out.println("Private endpoint accessed: " + path);
-
+        log.info("Private endpoint accessed: {}", path);
 
         // Validate JWT token
         String authHeader = request.getHeaders().getFirst("Authorization");
@@ -55,8 +54,6 @@ public class JwtAuthFilter implements WebFilter {
             // Validate the token and extract claims
             Claims claims = jwtUtil.validateToken(token);
 
-            log.info("calims: {}", claims);
-
             // Add user details to headers for forwarding to downstream services
             ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                     .header("X-Authenticated-User", claims.getSubject()) // Add username
@@ -65,7 +62,6 @@ public class JwtAuthFilter implements WebFilter {
 
             return chain.filter(exchange.mutate().request(mutatedRequest).build());
         } catch (Exception e) {
-            e.printStackTrace();
             return respondWithUnauthorized(exchange.getResponse());
         }
     }
@@ -93,8 +89,6 @@ public class JwtAuthFilter implements WebFilter {
         // Check if the service is in the public services list
         if (publicServices.contains(serviceName)) {
             // Allow public access to login and register endpoints
-            System.out.println("publicServices.contains(serviceName)");
-            System.out.println(path.contains("/login") || path.contains("/register"));
             return path.contains("/login") || path.contains("/register");
         }
         return false;

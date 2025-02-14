@@ -1,0 +1,11 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /centralized-log/*.log # Path to logs
+    fields:
+      environment: development
+      # app_name: microservice
+
+output.logstash:
+  hosts: ["logstash:5044"] # Logstash service
